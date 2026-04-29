@@ -1,0 +1,15 @@
+<canvas id="a" width="400" height="100" style="background:#000"></canvas>
+<script>
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream => {
+        const ctx = new AudioContext(), src = ctx.createMediaStreamSource(stream), ana = ctx.createAnalyser();
+        src.connect(ana); const data = new Uint8Array(ana.frequencyBinCount);
+        const cvs = document.getElementById('a').getContext('2d');
+        function draw() {
+            ana.getByteTimeDomainData(data); cvs.clearRect(0,0,400,100);
+            cvs.strokeStyle = '#0f0'; cvs.beginPath();
+            data.forEach((v, i) => cvs.lineTo(i, v/128*50)); cvs.stroke();
+            requestAnimationFrame(draw);
+        }
+        draw();
+    });
+</script>
